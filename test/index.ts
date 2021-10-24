@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, web3 } from "hardhat";
 import { QueueMock } from "../typechain";
 
 describe("QueueMock", () => {
@@ -28,11 +28,116 @@ describe("QueueMock", () => {
     expect(length).to.equal(0);
   });
 
-  // it("should initialize properly", async () => {
-  //   const queueMock = await setup();
-  //   const queueStorage = await queueMock.queue();
+  it("FIFO works correctly", async () => {
+    const queueMock = await setup();
 
-  //   expect(queueStorage.first).to.equal(1);
-  //   expect(queueStorage.last).to.equal(0);
-  // });
+    const first = web3.utils.asciiToHex("first");
+    const second = web3.utils.asciiToHex("second");
+    const third = web3.utils.asciiToHex("third");
+    const fourth = web3.utils.asciiToHex("fourth");
+    
+    console.log("add first element");
+    await queueMock.enqueue(first);
+    let queueStorage = await queueMock.queue();
+    let isEmpty = await queueMock.isEmpty();
+    let length = await queueMock.length();
+    let peekResult = await queueMock.peek();
+
+    expect(queueStorage.first).to.equal(1);
+    expect(queueStorage.last).to.equal(1);
+    expect(isEmpty).to.equal(false);
+    expect(length).to.equal(1);
+    expect(peekResult).to.equal(first);
+    
+    console.log("add second element");
+    await queueMock.enqueue(second);
+    queueStorage = await queueMock.queue();
+    length = await queueMock.length();
+    peekResult = await queueMock.peek();
+    let peekLastResult = await queueMock.peekLast();
+
+    expect(queueStorage.first).to.equal(1);
+    expect(queueStorage.last).to.equal(2);
+    expect(length).to.equal(2);
+    expect(peekResult).to.equal(first);
+    expect(peekLastResult).to.equal(second);
+
+    console.log("add third element");
+    await queueMock.enqueue(third);
+    queueStorage = await queueMock.queue();
+    length = await queueMock.length();
+    peekResult = await queueMock.peek();
+    peekLastResult = await queueMock.peekLast();
+
+    expect(queueStorage.first).to.equal(1);
+    expect(queueStorage.last).to.equal(3);
+    expect(length).to.equal(3);
+    expect(peekResult).to.equal(first);
+    expect(peekLastResult).to.equal(third);
+
+    console.log("pop front element");
+    await queueMock.dequeue();
+    queueStorage = await queueMock.queue();
+    length = await queueMock.length();
+    peekResult = await queueMock.peek();
+    peekLastResult = await queueMock.peekLast();
+
+    expect(queueStorage.first).to.equal(2);
+    expect(queueStorage.last).to.equal(3);
+    expect(length).to.equal(2);
+    expect(peekResult).to.equal(second);
+    expect(peekLastResult).to.equal(third);
+
+    console.log("add fourth element");
+    await queueMock.enqueue(fourth);
+    queueStorage = await queueMock.queue();
+    length = await queueMock.length();
+    peekResult = await queueMock.peek();
+    peekLastResult = await queueMock.peekLast();
+
+    expect(queueStorage.first).to.equal(2);
+    expect(queueStorage.last).to.equal(4);
+    expect(length).to.equal(3);
+    expect(peekResult).to.equal(second);
+    expect(peekLastResult).to.equal(fourth);
+
+    console.log("pop front element");
+    await queueMock.dequeue();
+    queueStorage = await queueMock.queue();
+    length = await queueMock.length();
+    peekResult = await queueMock.peek();
+    peekLastResult = await queueMock.peekLast();
+
+    expect(queueStorage.first).to.equal(3);
+    expect(queueStorage.last).to.equal(4);
+    expect(length).to.equal(2);
+    expect(peekResult).to.equal(third);
+    expect(peekLastResult).to.equal(fourth);
+
+    console.log("pop front element");
+    await queueMock.dequeue();
+    queueStorage = await queueMock.queue();
+    length = await queueMock.length();
+    peekResult = await queueMock.peek();
+    peekLastResult = await queueMock.peekLast();
+
+    expect(queueStorage.first).to.equal(4);
+    expect(queueStorage.last).to.equal(4);
+    expect(length).to.equal(1);
+    expect(peekResult).to.equal(fourth);
+    expect(peekLastResult).to.equal(fourth);
+
+    console.log("pop final element, queue should be empty");
+    await queueMock.dequeue();
+    queueStorage = await queueMock.queue();
+    isEmpty = await queueMock.isEmpty();
+    length = await queueMock.length();
+
+    expect(queueStorage.first).to.equal(5);
+    expect(queueStorage.last).to.equal(4);
+    expect(length).to.equal(1);
+    expect(isEmpty).to.equal(true);
+    expect(await queueMock.peek()).to.throw();
+    expect(await queueMock.peekLast()).to.throw();
+  });
 });

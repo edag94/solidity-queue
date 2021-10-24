@@ -19,8 +19,20 @@ describe("QueueMock", () => {
   it("should initialize properly", async () => {
     const queueMock = await setup();
     const queueStorage = await queueMock.queue();
+    const isEmpty = await queueMock.isEmpty();
+    const length = await queueMock.length();
 
     expect(queueStorage.first).to.equal(1);
     expect(queueStorage.last).to.equal(0);
+    expect(isEmpty).to.equal(true);
+    expect(length).to.equal(0);
   });
+
+  // it("should initialize properly", async () => {
+  //   const queueMock = await setup();
+  //   const queueStorage = await queueMock.queue();
+
+  //   expect(queueStorage.first).to.equal(1);
+  //   expect(queueStorage.last).to.equal(0);
+  // });
 });

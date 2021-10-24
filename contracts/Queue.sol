@@ -13,7 +13,7 @@ library Queue {
         uint256 last;
     }
 
-    modifier isNotEmpty {
+    modifier isNotEmpty(QueueStorage storage queue) {
         require(!isEmpty(queue), "Queue is empty.");
         _;
     }
@@ -35,7 +35,7 @@ library Queue {
         if (isEmpty(queue)) {
             return 0;
         }
-        return last - first + 1;
+        return queue.last - queue.first + 1;
     }
 
     /**
@@ -52,31 +52,31 @@ library Queue {
      * @param data The added element's data.
      */
     function enqueue(QueueStorage storage queue, bytes32 data) internal {
-        queue.data[++last] = data;
+        queue.data[++queue.last] = data;
     }
 
     /**
      * @dev Removes an element from the front of the queue and returns it.
      * @param queue QueueStorage struct from contract.
      */
-    function dequeue(QueueStorage storage queue) internal isNotEmpty returns (bytes32 data) {
-        data = queue.data[first];
-        delete queue.data[first++];
+    function dequeue(QueueStorage storage queue) internal isNotEmpty(queue) returns (bytes32 data) {
+        data = queue.data[queue.first];
+        delete queue.data[queue.first++];
     }
 
     /**
      * @dev Returns the data from the front of the queue, without removing it.
      * @param queue QueueStorage struct from contract.
      */
-    function peek(QueueStorage storage queue) internal isNotEmpty returns (bytes32 data) {
-        return queue.data[first];
+    function peek(QueueStorage storage queue) internal isNotEmpty(queue) returns (bytes32 data) {
+        return queue.data[queue.first];
     }
 
     /**
      * @dev Returns the data from the back of the queue.
      * @param queue QueueStorage struct from contract.
      */
-    function peekLast(QueueStorage storage queue) internal isNotEmpty returns (bytes32 data) {
-        return queue.data[last];
+    function peekLast(QueueStorage storage queue) internal isNotEmpty(queue) returns (bytes32 data) {
+        return queue.data[queue.last];
     }
 }

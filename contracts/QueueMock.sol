@@ -30,28 +30,28 @@ contract QueueMock {
      * @dev Adds an element to the back of the queue.
      * @param data The added element's data.
      */
-    function enqueue(bytes32 data) public {
+    function enqueue(uint256 data) public {
         queue.enqueue(data);
     }
 
     /**
      * @dev Removes an element from the front of the queue and returns it.
      */
-    function dequeue() public returns (bytes32 data) {
+    function dequeue() public returns (uint256 data) {
         return queue.dequeue();
     }
 
     /**
      * @dev Returns the data from the front of the queue, without removing it.
      */
-    function peek() public view returns (bytes32 data) {
+    function peek() public view returns (uint256 data) {
         return queue.peek();
     }
 
     /**
      * @dev Returns the data from the back of the queue.
      */
-    function peekLast() public view returns (bytes32 data) {
+    function peekLast() public view returns (uint256 data) {
         return queue.peekLast();
     }
 }

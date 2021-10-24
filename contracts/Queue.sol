@@ -8,7 +8,7 @@ pragma solidity ^0.8.0;
  */
 library Queue {
     struct QueueStorage {
-        mapping (uint256 => bytes32) data;
+        mapping (uint256 => uint256) data;
         uint256 first;
         uint256 last;
     }
@@ -51,7 +51,7 @@ library Queue {
      * @param queue QueueStorage struct from contract.
      * @param data The added element's data.
      */
-    function enqueue(QueueStorage storage queue, bytes32 data) internal {
+    function enqueue(QueueStorage storage queue, uint256 data) internal {
         queue.data[++queue.last] = data;
     }
 
@@ -59,7 +59,7 @@ library Queue {
      * @dev Removes an element from the front of the queue and returns it.
      * @param queue QueueStorage struct from contract.
      */
-    function dequeue(QueueStorage storage queue) internal isNotEmpty(queue) returns (bytes32 data) {
+    function dequeue(QueueStorage storage queue) internal isNotEmpty(queue) returns (uint256 data) {
         data = queue.data[queue.first];
         delete queue.data[queue.first++];
     }
@@ -68,7 +68,7 @@ library Queue {
      * @dev Returns the data from the front of the queue, without removing it.
      * @param queue QueueStorage struct from contract.
      */
-    function peek(QueueStorage storage queue) internal view isNotEmpty(queue) returns (bytes32 data) {
+    function peek(QueueStorage storage queue) internal view isNotEmpty(queue) returns (uint256 data) {
         return queue.data[queue.first];
     }
 
@@ -76,7 +76,7 @@ library Queue {
      * @dev Returns the data from the back of the queue.
      * @param queue QueueStorage struct from contract.
      */
-    function peekLast(QueueStorage storage queue) internal view isNotEmpty(queue) returns (bytes32 data) {
+    function peekLast(QueueStorage storage queue) internal view isNotEmpty(queue) returns (uint256 data) {
         return queue.data[queue.last];
     }
 }

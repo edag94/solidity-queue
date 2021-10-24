@@ -31,10 +31,10 @@ describe("QueueMock", () => {
   it("FIFO works correctly", async () => {
     const queueMock = await setup();
 
-    const first = web3.utils.asciiToHex("first");
-    const second = web3.utils.asciiToHex("second");
-    const third = web3.utils.asciiToHex("third");
-    const fourth = web3.utils.asciiToHex("fourth");
+    const first = 1;
+    const second = 2;
+    const third = 3;
+    const fourth = 4;
     
     console.log("add first element");
     await queueMock.enqueue(first);
@@ -132,12 +132,13 @@ describe("QueueMock", () => {
     queueStorage = await queueMock.queue();
     isEmpty = await queueMock.isEmpty();
     length = await queueMock.length();
+    const revertMessage = 'Queue is empty.';
 
     expect(queueStorage.first).to.equal(5);
     expect(queueStorage.last).to.equal(4);
-    expect(length).to.equal(1);
+    expect(length).to.equal(0);
     expect(isEmpty).to.equal(true);
-    expect(await queueMock.peek()).to.throw();
-    expect(await queueMock.peekLast()).to.throw();
+    await expect(queueMock.peek()).to.revertedWith(revertMessage);
+    await expect(queueMock.peekLast()).to.revertedWith(revertMessage);
   });
 });

@@ -59,7 +59,7 @@ library Queue {
      * @dev Removes an element from the front of the queue and returns it.
      * @param queue QueueStorage struct from contract.
      */
-    function dequeue(QueueStorage storage queue) returns (bytes32 data) internal isNotEmpty {
+    function dequeue(QueueStorage storage queue) internal isNotEmpty returns (bytes32 data) {
         data = queue.data[first];
         delete queue.data[first++];
     }
@@ -68,7 +68,7 @@ library Queue {
      * @dev Returns the data from the front of the queue, without removing it.
      * @param queue QueueStorage struct from contract.
      */
-    function peek(QueueStorage storage queue) returns (bytes32 data) internal isNotEmpty {
+    function peek(QueueStorage storage queue) internal isNotEmpty returns (bytes32 data) {
         return queue.data[first];
     }
 
@@ -76,7 +76,7 @@ library Queue {
      * @dev Returns the data from the back of the queue.
      * @param queue QueueStorage struct from contract.
      */
-    function peekLast(QueueStorage storage queue) returns (bytes32 data) internal isNotEmpty {
+    function peekLast(QueueStorage storage queue) internal isNotEmpty returns (bytes32 data) {
         return queue.data[last];
     }
 }

@@ -22,7 +22,7 @@ library Queue {
      * @dev Sets the queue's initial state, with a queue size of 0.
      * @param queue QueueStorage struct from contract.
      */
-    function initialize(QueueStorage storage queue) public {
+    function initialize(QueueStorage storage queue) internal {
         queue.first = 1;
         queue.last = 0;
     }
@@ -31,7 +31,7 @@ library Queue {
      * @dev Gets the number of elements in the queue.
      * @param queue QueueStorage struct from contract.
      */
-    function length(QueueStorage storage queue) public view returns (uint256) {
+    function length(QueueStorage storage queue) internal view returns (uint256) {
         if (queue.last < queue.first) {
             return 0;
         }
@@ -42,7 +42,7 @@ library Queue {
      * @dev Returns if queue is empty.
      * @param queue QueueStorage struct from contract.
      */
-    function isEmpty(QueueStorage storage queue) public view returns (bool) {
+    function isEmpty(QueueStorage storage queue) internal view returns (bool) {
         return length(queue) == 0;
     }
 
@@ -51,7 +51,7 @@ library Queue {
      * @param queue QueueStorage struct from contract.
      * @param data The added element's data.
      */
-    function enqueue(QueueStorage storage queue, bytes32 data) public {
+    function enqueue(QueueStorage storage queue, bytes32 data) internal {
         queue.data[++queue.last] = data;
     }
 
@@ -59,7 +59,7 @@ library Queue {
      * @dev Removes an element from the front of the queue and returns it.
      * @param queue QueueStorage struct from contract.
      */
-    function dequeue(QueueStorage storage queue) public isNotEmpty(queue) returns (bytes32 data) {
+    function dequeue(QueueStorage storage queue) internal isNotEmpty(queue) returns (bytes32 data) {
         data = queue.data[queue.first];
         delete queue.data[queue.first++];
     }
@@ -68,7 +68,7 @@ library Queue {
      * @dev Returns the data from the front of the queue, without removing it.
      * @param queue QueueStorage struct from contract.
      */
-    function peek(QueueStorage storage queue) public view isNotEmpty(queue) returns (bytes32 data) {
+    function peek(QueueStorage storage queue) internal view isNotEmpty(queue) returns (bytes32 data) {
         return queue.data[queue.first];
     }
 
@@ -76,7 +76,7 @@ library Queue {
      * @dev Returns the data from the back of the queue.
      * @param queue QueueStorage struct from contract.
      */
-    function peekLast(QueueStorage storage queue) public view isNotEmpty(queue) returns (bytes32 data) {
+    function peekLast(QueueStorage storage queue) internal view isNotEmpty(queue) returns (bytes32 data) {
         return queue.data[queue.last];
     }
 }

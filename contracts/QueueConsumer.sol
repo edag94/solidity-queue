@@ -6,7 +6,7 @@ import "./Queue.sol";
 contract QueueConsumer {
     using Queue for Queue.QueueStorage;
 
-    QueueStorage public queue;
+    Queue.QueueStorage public queue;
 
     constructor() {
         queue.initialize();

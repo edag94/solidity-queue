@@ -31,8 +31,8 @@ library Queue {
      * @dev Gets the number of elements in the queue.
      * @param queue QueueStorage struct from contract.
      */
-    function length(QueueStorage storage queue) public returns (uint256) {
-        if (isEmpty(queue)) {
+    function length(QueueStorage storage queue) public view returns (uint256) {
+        if (queue.last < queue.first) {
             return 0;
         }
         return queue.last - queue.first + 1;
@@ -42,8 +42,8 @@ library Queue {
      * @dev Returns if queue is empty.
      * @param queue QueueStorage struct from contract.
      */
-    function isEmpty(QueueStorage storage queue) public returns (bool) {
-        return length(queue) > 0;
+    function isEmpty(QueueStorage storage queue) public view returns (bool) {
+        return length(queue) == 0;
     }
 
     /**
@@ -68,7 +68,7 @@ library Queue {
      * @dev Returns the data from the front of the queue, without removing it.
      * @param queue QueueStorage struct from contract.
      */
-    function peek(QueueStorage storage queue) public isNotEmpty(queue) returns (bytes32 data) {
+    function peek(QueueStorage storage queue) public view isNotEmpty(queue) returns (bytes32 data) {
         return queue.data[queue.first];
     }
 
@@ -76,7 +76,7 @@ library Queue {
      * @dev Returns the data from the back of the queue.
      * @param queue QueueStorage struct from contract.
      */
-    function peekLast(QueueStorage storage queue) public isNotEmpty(queue) returns (bytes32 data) {
+    function peekLast(QueueStorage storage queue) public view isNotEmpty(queue) returns (bytes32 data) {
         return queue.data[queue.last];
     }
 }

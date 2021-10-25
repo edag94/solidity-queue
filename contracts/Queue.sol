@@ -79,4 +79,12 @@ library Queue {
     function peekLast(QueueStorage storage queue) internal view isNotEmpty(queue) returns (uint256 data) {
         return queue.data[queue.last];
     }
+
+    function migrateQueue(QueueStorage storage queue) private isNotEmpty(queue) {
+        // copy elements from newFirst (index = 1) to newLast
+        uint256 newLast = 1 + length(queue);
+        for (uint256 index = 1; index < newLast; ++index) {
+            queue.data[index] = queue.data[queue.first + index - 1];
+        }
+    }
 }

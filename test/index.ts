@@ -1,5 +1,6 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { expect } from "chai";
-import { ethers, web3 } from "hardhat";
+import { ethers } from "hardhat";
 import { QueueMock } from "../typechain";
 
 describe("QueueMock", () => {
@@ -76,12 +77,15 @@ describe("QueueMock", () => {
     expect(peekLastResult).to.equal(third);
 
     console.log("pop front element");
-    await queueMock.dequeue();
+    let dequeueTx = await queueMock.dequeue();
+    let receipt = await dequeueTx.wait();
+    let front = receipt.events![0].args!.data as BigNumber;
     queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
+    expect(front).to.equal(first);
     expect(queueStorage.first).to.equal(2);
     expect(queueStorage.last).to.equal(3);
     expect(length).to.equal(2);
@@ -102,12 +106,15 @@ describe("QueueMock", () => {
     expect(peekLastResult).to.equal(fourth);
 
     console.log("pop front element");
-    await queueMock.dequeue();
+    dequeueTx = await queueMock.dequeue();
+    receipt = await dequeueTx.wait();
+    front = receipt.events![0].args!.data as BigNumber;
     queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
+    expect(front).to.equal(second);
     expect(queueStorage.first).to.equal(3);
     expect(queueStorage.last).to.equal(4);
     expect(length).to.equal(2);
@@ -115,12 +122,15 @@ describe("QueueMock", () => {
     expect(peekLastResult).to.equal(fourth);
 
     console.log("pop front element");
-    await queueMock.dequeue();
+    dequeueTx = await queueMock.dequeue();
+    receipt = await dequeueTx.wait();
+    front = receipt.events![0].args!.data as BigNumber;
     queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
+    expect(front).to.equal(third);
     expect(queueStorage.first).to.equal(4);
     expect(queueStorage.last).to.equal(4);
     expect(length).to.equal(1);
@@ -128,12 +138,15 @@ describe("QueueMock", () => {
     expect(peekLastResult).to.equal(fourth);
 
     console.log("pop final element, queue should be empty");
-    await queueMock.dequeue();
+    dequeueTx = await queueMock.dequeue();
+    receipt = await dequeueTx.wait();
+    front = receipt.events![0].args!.data as BigNumber;
     queueStorage = await queueMock.queue();
     isEmpty = await queueMock.isEmpty();
     length = await queueMock.length();
     const revertMessage = 'Queue is empty.';
 
+    expect(front).to.equal(fourth);
     expect(queueStorage.first).to.equal(5);
     expect(queueStorage.last).to.equal(4);
     expect(length).to.equal(0);

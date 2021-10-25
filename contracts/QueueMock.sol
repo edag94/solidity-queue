@@ -8,6 +8,8 @@ contract QueueMock {
 
     Queue.QueueStorage public queue;
 
+    event Dequeued(uint256 data); // to be consumed in tests since non-constant return values not accessible off-chain (refer to https://ethereum.stackexchange.com/questions/88119/i-see-no-way-to-obtain-the-return-value-of-a-non-view-function-ethers-js)
+
     constructor() {
         queue.initialize();
     }
@@ -15,14 +17,14 @@ contract QueueMock {
     /**
      * @dev Gets the number of elements in the queue.
      */
-    function length() public view returns (uint256) {
+    function length() external view returns (uint256) {
         return queue.length();
     }
 
     /**
      * @dev Returns if queue is empty.
      */
-    function isEmpty() public view returns (bool) {
+    function isEmpty() external view returns (bool) {
         return queue.isEmpty();
     }
 
@@ -30,28 +32,29 @@ contract QueueMock {
      * @dev Adds an element to the back of the queue.
      * @param data The added element's data.
      */
-    function enqueue(uint256 data) public {
+    function enqueue(uint256 data) external {
         queue.enqueue(data);
     }
 
     /**
      * @dev Removes an element from the front of the queue and returns it.
      */
-    function dequeue() public returns (uint256 data) {
-        return queue.dequeue();
+    function dequeue() external returns (uint256 data) {
+        data = queue.dequeue();
+        emit Dequeued(data);
     }
 
     /**
      * @dev Returns the data from the front of the queue, without removing it.
      */
-    function peek() public view returns (uint256 data) {
+    function peek() external view returns (uint256 data) {
         return queue.peek();
     }
 
     /**
      * @dev Returns the data from the back of the queue.
      */
-    function peekLast() public view returns (uint256 data) {
+    function peekLast() external view returns (uint256 data) {
         return queue.peekLast();
     }
 }

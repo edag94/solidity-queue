@@ -14,6 +14,7 @@ describe("QueueMock", () => {
     );
     const queueMock = (await QueueMock.deploy()) as unknown as QueueMock;
     await queueMock.deployed();
+    queueMock.initialize()
     return queueMock;
   }
 
@@ -154,4 +155,8 @@ describe("QueueMock", () => {
     await expect(queueMock.peek()).to.revertedWith(revertMessage);
     await expect(queueMock.peekLast()).to.revertedWith(revertMessage);
   });
+
+  it("migrates correctly when upper bound is hit", async () => {
+
+
 });

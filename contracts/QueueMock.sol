@@ -1,19 +1,24 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./Queue.sol";
 
-contract QueueMock {
+contract QueueMock is Initializable {
     using Queue for Queue.QueueStorage;
 
     Queue.QueueStorage public queue;
 
     event Dequeued(uint256 data); // to be consumed in tests since non-constant return values not accessible off-chain (refer to https://ethereum.stackexchange.com/questions/88119/i-see-no-way-to-obtain-the-return-value-of-a-non-view-function-ethers-js)
 
-    constructor() {
+    function initialize() external initializer {
         queue.initialize();
     }
 
+    function initializeWithLength(uint256 maxLength) external initializer {
+        queue.initialize(maxLength);
+    }
+    
     /**
      * @dev Gets the number of elements in the queue.
      */

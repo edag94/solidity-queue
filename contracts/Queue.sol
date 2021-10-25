@@ -7,10 +7,14 @@ pragma solidity ^0.8.0;
  * @dev Implementation of the queue data structure, providing a library with struct definition for queue storage in consuming contracts.
  */
 library Queue {
+    uint256 constant MAX_lastIndex = type(uint256).max;
+
     struct QueueStorage {
         mapping (uint256 => uint256) data;
         uint256 first;
         uint256 last;
+
+        uint256 lastIndex; // this is configurable for ease of testing queue migration.
     }
 
     modifier isNotEmpty(QueueStorage storage queue) {
@@ -23,8 +27,23 @@ library Queue {
      * @param queue QueueStorage struct from contract.
      */
     function initialize(QueueStorage storage queue) internal {
+        _initialize(queue, MAX_lastIndex);
+    }
+
+    /**
+     * @dev Sets the queue's initial state, with a queue size of 0.
+     * @param queue QueueStorage struct from contract.
+     * @param lastIndex If enqueue makes QueueStorage.last go past this number, will cause a queue migration back to start.
+     */
+    function initialize(QueueStorage storage queue, uint256 lastIndex) internal {
+        _initialize(queue, lastIndex);
+    }
+
+    function _initialize(QueueStorage storage queue, uint256 lastIndex) private {
+        require(lastIndex > 1);
         queue.first = 1;
         queue.last = 0;
+        queue.lastIndex = lastIndex;
     }
 
     /**
@@ -52,6 +71,10 @@ library Queue {
      * @param data The added element's data.
      */
     function enqueue(QueueStorage storage queue, uint256 data) internal {
+        if (queue.last == queue.last) {
+            // migrate queue before enqueueing next elt.
+            migrateQueue(queue);
+        }
         queue.data[++queue.last] = data;
     }
 

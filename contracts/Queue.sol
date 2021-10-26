@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 /**
  * @title Queue
- * @author Erick Dagenais (https://github.com/edag94)
+ * @author edag94 (https://github.com/edag94)
  * @dev Implementation of the queue data structure, providing a library with struct definition for queue storage in consuming contracts.
  */
 library Queue {
@@ -278,5 +278,227 @@ library Queue {
      */
     function peekLast(Uint256Queue storage queue) internal view returns (uint256 data) {
         return uint256(_peekLast(queue._inner));
+    }
+
+    // UniqueBytes32Queue
+
+    struct UniqueBytes32Queue {
+        QueueStorage _inner;
+        mapping (bytes32 => bool) _exists;
+    }
+
+    /**
+     * @dev Sets the queue's initial state, with a queue size of 0.
+     * @param queue UniqueBytes32Queue struct from contract.
+     */
+    function initialize(UniqueBytes32Queue storage queue) internal {
+        _initialize(queue._inner);
+    }
+
+    /**
+     * @dev Gets the number of elements in the queue. O(1)
+     * @param queue UniqueBytes32Queue struct from contract.
+     */
+    function length(UniqueBytes32Queue storage queue) internal view returns (uint256) {
+        return _length(queue._inner);
+    }
+
+    /**
+     * @dev Returns if queue is empty. O(1)
+     * @param queue UniqueBytes32Queue struct from contract.
+     */
+    function isEmpty(UniqueBytes32Queue storage queue) internal view returns (bool) {
+        return _isEmpty(queue._inner);
+    }
+
+    /**
+     * @dev Adds an element to the back of the queue. O(1)
+     * @param queue UniqueBytes32Queue struct from contract.
+     * @param data The added element's data.
+     */
+    function enqueue(UniqueBytes32Queue storage queue, bytes32 data) internal returns (bool existed) {
+        if (queue._exists[data]) {
+            existed = true;
+        } else {
+            _enqueue(queue._inner, data);
+        }
+        return existed;
+    }
+
+    /**
+     * @dev Removes an element from the front of the queue and returns it. O(1)
+     * @param queue UniqueBytes32Queue struct from contract.
+     */
+    function dequeue(UniqueBytes32Queue storage queue) internal returns (bytes32 data) {
+        data = _dequeue(queue._inner);
+        delete queue._exists[data];
+    }
+
+    /**
+     * @dev Returns the data from the front of the queue, without removing it. O(1)
+     * @param queue UniqueBytes32Queue struct from contract.
+     */
+    function peek(UniqueBytes32Queue storage queue) internal view returns (bytes32 data) {
+        return _peek(queue._inner);
+    }
+
+    /**
+     * @dev Returns the data from the back of the queue. O(1)
+     * @param queue UniqueBytes32Queue struct from contract.
+     */
+    function peekLast(UniqueBytes32Queue storage queue) internal view returns (bytes32 data) {
+        return _peekLast(queue._inner);
+    }
+
+    function exists(UniqueBytes32Queue storage queue, bytes32 data) internal view returns (bool) {
+        return queue._exists[data];
+    }
+
+    // UniqueAddressQueue
+
+    struct UniqueAddressQueue {
+        QueueStorage _inner;
+        mapping (address => bool) _exists;
+    }
+
+    /**
+     * @dev Sets the queue's initial state, with a queue size of 0.
+     * @param queue UniqueAddressQueue struct from contract.
+     */
+    function initialize(UniqueAddressQueue storage queue) internal {
+        _initialize(queue._inner);
+    }
+
+    /**
+     * @dev Gets the number of elements in the queue. O(1)
+     * @param queue UniqueAddressQueue struct from contract.
+     */
+    function length(UniqueAddressQueue storage queue) internal view returns (uint256) {
+        return _length(queue._inner);
+    }
+
+    /**
+     * @dev Returns if queue is empty. O(1)
+     * @param queue UniqueAddressQueue struct from contract.
+     */
+    function isEmpty(UniqueAddressQueue storage queue) internal view returns (bool) {
+        return _isEmpty(queue._inner);
+    }
+
+    /**
+     * @dev Adds an element to the back of the queue. O(1)
+     * @param queue UniqueAddressQueue struct from contract.
+     * @param data The added element's data.
+     */
+    function enqueue(UniqueAddressQueue storage queue, address data) internal returns (bool existed) {
+        if (queue._exists[data]) {
+            existed = true;
+        } else {
+            _enqueue(queue._inner, bytes32(uint256(uint160(data))));
+        }
+        return existed;
+    }
+
+    /**
+     * @dev Removes an element from the front of the queue and returns it. O(1)
+     * @param queue UniqueAddressQueue struct from contract.
+     */
+    function dequeue(UniqueAddressQueue storage queue) internal returns (address data) {
+        data = address(uint160(uint256(_dequeue(queue._inner))));
+        delete queue._exists[data];
+    }
+
+    /**
+     * @dev Returns the data from the front of the queue, without removing it. O(1)
+     * @param queue UniqueAddressQueue struct from contract.
+     */
+    function peek(UniqueAddressQueue storage queue) internal view returns (address data) {
+        return address(uint160(uint256(_peek(queue._inner))));
+    }
+
+    /**
+     * @dev Returns the data from the back of the queue. O(1)
+     * @param queue UniqueAddressQueue struct from contract.
+     */
+    function peekLast(UniqueAddressQueue storage queue) internal view returns (address data) {
+        return address(uint160(uint256(_peekLast(queue._inner))));
+    }
+
+    function exists(UniqueAddressQueue storage queue, address data) internal view returns (bool) {
+        return queue._exists[data];
+    }
+
+    // UniqueUint256Queue
+
+    struct UniqueUint256Queue {
+        QueueStorage _inner;
+        mapping (uint256 => bool) _exists;
+    }
+
+    /**
+     * @dev Sets the queue's initial state, with a queue size of 0.
+     * @param queue UniqueUint256Queue struct from contract.
+     */
+    function initialize(UniqueUint256Queue storage queue) internal {
+        _initialize(queue._inner);
+    }
+
+    /**
+     * @dev Gets the number of elements in the queue. O(1)
+     * @param queue UniqueUint256Queue struct from contract.
+     */
+    function length(UniqueUint256Queue storage queue) internal view returns (uint256) {
+        return _length(queue._inner);
+    }
+
+    /**
+     * @dev Returns if queue is empty. O(1)
+     * @param queue UniqueUint256Queue struct from contract.
+     */
+    function isEmpty(UniqueUint256Queue storage queue) internal view returns (bool) {
+        return _isEmpty(queue._inner);
+    }
+
+    /**
+     * @dev Adds an element to the back of the queue. O(1)
+     * @param queue UniqueUint256Queue struct from contract.
+     * @param data The added element's data.
+     */
+    function enqueue(UniqueUint256Queue storage queue, uint256 data) internal returns (bool existed) {
+        if (queue._exists[data]) {
+            existed = true;
+        } else {
+            _enqueue(queue._inner, bytes32(data));
+        }
+        return existed;
+    }
+
+    /**
+     * @dev Removes an element from the front of the queue and returns it. O(1)
+     * @param queue UniqueUint256Queue struct from contract.
+     */
+    function dequeue(UniqueUint256Queue storage queue) internal returns (uint256 data) {
+        data = uint256(_dequeue(queue._inner));
+        delete queue._exists[data];
+    }
+
+    /**
+     * @dev Returns the data from the front of the queue, without removing it. O(1)
+     * @param queue UniqueUint256Queue struct from contract.
+     */
+    function peek(UniqueUint256Queue storage queue) internal view returns (uint256 data) {
+        return uint256(_peek(queue._inner));
+    }
+
+    /**
+     * @dev Returns the data from the back of the queue. O(1)
+     * @param queue UniqueUint256Queue struct from contract.
+     */
+    function peekLast(UniqueUint256Queue storage queue) internal view returns (uint256 data) {
+        return uint256(_peekLast(queue._inner));
+    }
+
+    function exists(UniqueUint256Queue storage queue, uint256 data) internal view returns (bool) {
+        return queue._exists[data];
     }
 }

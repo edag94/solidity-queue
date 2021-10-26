@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./Queue.sol";
+import "../Queue.sol";
 
 contract Bytes32QueueMock {
     using Queue for Queue.Bytes32Queue;

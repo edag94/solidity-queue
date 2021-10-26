@@ -1,23 +1,23 @@
+// eslint-disable-next-line node/no-extraneous-import
 import { BigNumber } from "@ethersproject/bignumber";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+// eslint-disable-next-line node/no-missing-import
 import { QueueMock } from "../typechain";
 
-const Uint256QueueMock = "Uint256QueueMock"
+const Uint256QueueMock = "Uint256QueueMock";
 
 describe(Uint256QueueMock, () => {
   const contractInfo = {
-    name: Uint256QueueMock
+    name: Uint256QueueMock,
   };
 
   const setup = async (): Promise<QueueMock> => {
-    const QueueMock = await ethers.getContractFactory(
-      contractInfo.name,
-    );
+    const QueueMock = await ethers.getContractFactory(contractInfo.name);
     const queueMock = (await QueueMock.deploy()) as unknown as QueueMock;
     await queueMock.deployed();
     return queueMock;
-  }
+  };
 
   it("should initialize properly", async () => {
     const queueMock = await setup();
@@ -35,7 +35,7 @@ describe(Uint256QueueMock, () => {
     const second = 2;
     const third = 3;
     const fourth = 4;
-    
+
     console.log("add first element");
     await queueMock.enqueue(first);
     let isEmpty = await queueMock.isEmpty();
@@ -45,7 +45,7 @@ describe(Uint256QueueMock, () => {
     expect(isEmpty).to.equal(false);
     expect(length).to.equal(1);
     expect(peekResult).to.equal(first);
-    
+
     console.log("add second element");
     await queueMock.enqueue(second);
     length = await queueMock.length();
@@ -121,7 +121,7 @@ describe(Uint256QueueMock, () => {
     front = receipt.events![0].args!.data as BigNumber;
     isEmpty = await queueMock.isEmpty();
     length = await queueMock.length();
-    const revertMessage = 'Queue is empty.';
+    const revertMessage = "Queue is empty.";
 
     expect(front).to.equal(fourth);
     expect(length).to.equal(0);

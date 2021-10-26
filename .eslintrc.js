@@ -20,5 +20,6 @@ module.exports = {
       "error",
       { ignores: ["modules"] },
     ],
+    "prettier/prettier": ["error", { endOfLine: "auto" }], // https://stackoverflow.com/questions/53516594/why-do-i-keep-getting-delete-cr-prettier-prettier
   },
 };

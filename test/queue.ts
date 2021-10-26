@@ -3,18 +3,18 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 // eslint-disable-next-line node/no-missing-import
-import { QueueMock } from "../typechain";
+import { Uint256QueueMock } from "../typechain";
 
-const Uint256QueueMock = "Uint256QueueMock";
+const uint256QueueMock = "Uint256QueueMock";
 
-describe(Uint256QueueMock, () => {
+describe(uint256QueueMock, () => {
   const contractInfo = {
-    name: Uint256QueueMock,
+    name: uint256QueueMock,
   };
 
-  const setup = async (): Promise<QueueMock> => {
+  const setup = async (): Promise<Uint256QueueMock> => {
     const QueueMock = await ethers.getContractFactory(contractInfo.name);
-    const queueMock = (await QueueMock.deploy()) as unknown as QueueMock;
+    const queueMock = (await QueueMock.deploy()) as unknown as Uint256QueueMock;
     await queueMock.deployed();
     return queueMock;
   };

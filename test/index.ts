@@ -3,9 +3,11 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { QueueMock } from "../typechain";
 
-describe("QueueMock", () => {
+const Uint256QueueMock = "Uint256QueueMock"
+
+describe(Uint256QueueMock, () => {
   const contractInfo = {
-    name: "QueueMock"
+    name: Uint256QueueMock
   };
 
   const setup = async (): Promise<QueueMock> => {
@@ -19,12 +21,9 @@ describe("QueueMock", () => {
 
   it("should initialize properly", async () => {
     const queueMock = await setup();
-    const queueStorage = await queueMock.queue();
     const isEmpty = await queueMock.isEmpty();
     const length = await queueMock.length();
 
-    expect(queueStorage.first).to.equal(1);
-    expect(queueStorage.last).to.equal(0);
     expect(isEmpty).to.equal(true);
     expect(length).to.equal(0);
   });
@@ -39,39 +38,30 @@ describe("QueueMock", () => {
     
     console.log("add first element");
     await queueMock.enqueue(first);
-    let queueStorage = await queueMock.queue();
     let isEmpty = await queueMock.isEmpty();
     let length = await queueMock.length();
     let peekResult = await queueMock.peek();
 
-    expect(queueStorage.first).to.equal(1);
-    expect(queueStorage.last).to.equal(1);
     expect(isEmpty).to.equal(false);
     expect(length).to.equal(1);
     expect(peekResult).to.equal(first);
     
     console.log("add second element");
     await queueMock.enqueue(second);
-    queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     let peekLastResult = await queueMock.peekLast();
 
-    expect(queueStorage.first).to.equal(1);
-    expect(queueStorage.last).to.equal(2);
     expect(length).to.equal(2);
     expect(peekResult).to.equal(first);
     expect(peekLastResult).to.equal(second);
 
     console.log("add third element");
     await queueMock.enqueue(third);
-    queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
-    expect(queueStorage.first).to.equal(1);
-    expect(queueStorage.last).to.equal(3);
     expect(length).to.equal(3);
     expect(peekResult).to.equal(first);
     expect(peekLastResult).to.equal(third);
@@ -80,27 +70,21 @@ describe("QueueMock", () => {
     let dequeueTx = await queueMock.dequeue();
     let receipt = await dequeueTx.wait();
     let front = receipt.events![0].args!.data as BigNumber;
-    queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
     expect(front).to.equal(first);
-    expect(queueStorage.first).to.equal(2);
-    expect(queueStorage.last).to.equal(3);
     expect(length).to.equal(2);
     expect(peekResult).to.equal(second);
     expect(peekLastResult).to.equal(third);
 
     console.log("add fourth element");
     await queueMock.enqueue(fourth);
-    queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
-    expect(queueStorage.first).to.equal(2);
-    expect(queueStorage.last).to.equal(4);
     expect(length).to.equal(3);
     expect(peekResult).to.equal(second);
     expect(peekLastResult).to.equal(fourth);
@@ -109,14 +93,11 @@ describe("QueueMock", () => {
     dequeueTx = await queueMock.dequeue();
     receipt = await dequeueTx.wait();
     front = receipt.events![0].args!.data as BigNumber;
-    queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
     expect(front).to.equal(second);
-    expect(queueStorage.first).to.equal(3);
-    expect(queueStorage.last).to.equal(4);
     expect(length).to.equal(2);
     expect(peekResult).to.equal(third);
     expect(peekLastResult).to.equal(fourth);
@@ -125,14 +106,11 @@ describe("QueueMock", () => {
     dequeueTx = await queueMock.dequeue();
     receipt = await dequeueTx.wait();
     front = receipt.events![0].args!.data as BigNumber;
-    queueStorage = await queueMock.queue();
     length = await queueMock.length();
     peekResult = await queueMock.peek();
     peekLastResult = await queueMock.peekLast();
 
     expect(front).to.equal(third);
-    expect(queueStorage.first).to.equal(4);
-    expect(queueStorage.last).to.equal(4);
     expect(length).to.equal(1);
     expect(peekResult).to.equal(fourth);
     expect(peekLastResult).to.equal(fourth);
@@ -141,14 +119,11 @@ describe("QueueMock", () => {
     dequeueTx = await queueMock.dequeue();
     receipt = await dequeueTx.wait();
     front = receipt.events![0].args!.data as BigNumber;
-    queueStorage = await queueMock.queue();
     isEmpty = await queueMock.isEmpty();
     length = await queueMock.length();
     const revertMessage = 'Queue is empty.';
 
     expect(front).to.equal(fourth);
-    expect(queueStorage.first).to.equal(5);
-    expect(queueStorage.last).to.equal(4);
     expect(length).to.equal(0);
     expect(isEmpty).to.equal(true);
     await expect(queueMock.peek()).to.revertedWith(revertMessage);
